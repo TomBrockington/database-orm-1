@@ -11,6 +11,60 @@ datasource db {
 model Customer {
   id        Int      @id @default(autoincrement())
   name      String
+  contact   Contact?
+  ticket    Ticket[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Contact {
+  id         Int      @id @default(autoincrement())
+  phone      String
+  email      String
+  customerId Int      @unique
+  customer   Customer @relation(fields: [customerId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Movie {
+  id          Int         @id @default(autoincrement())
+  title       String      @unique
+  runtimeMins Int
+  screening   Screening[]
+  ticket      Ticket[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model Screen {
+  id        Int         @id @default(autoincrement())
+  number    Int
+  screening Screening[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+model Screening {
+  id        Int      @id @default(autoincrement())
+  startsAt  DateTime
+  ticket    Ticket[]
+  movieId   Int      @unique
+  movie     Movie    @relation(fields: [movieId], references: [id])
+  screenId  Int      @unique
+  screen    Screen   @relation(fields: [screenId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Ticket {
+  id          Int       @id @default(autoincrement())
+  movieTitle  String   
+  movie       Movie     @relation(fields: [movieTitle], references: [title]) 
+  customerId  Int       @unique
+  customer    Customer  @relation(fields: [customerId], references: [id])
+  screeningId Int       @unique
+  Screening   Screening @relation(fields: [screeningId], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
